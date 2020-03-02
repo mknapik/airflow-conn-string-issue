@@ -1,7 +1,20 @@
 version: '3.7'
+volumes:
+  home:
 services:
   airflow:
-    images: apache/airflow:master-python3.7-ci
+    image: apache/airflow:v1-10-test-ci
+    command: initdb
+    volumes:
+    - ./dags:/root/airflow/dags:ro
+    - home:/root/airflow
     environment:
-    - AIRFLOW_CONN_S3_DEFAULT=s3://XXXXXXXXXXXXXXXX:XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX@s3
- 
+    - EXPECT_1=:password/
+    - EXPECT_2=:password
+    - EXPECT_3=:password/
+    # when urllib.parse.quote was used:
+    - AIRFLOW_CONN_S3_OK=s3://XXX:%3Apassword%2F@s3
+    # however, using single or double quote is treated literally
+    - AIRFLOW_CONN_S3_FAIL=s3://XXX:":password"@s3
+    # having slash in a password leads to parse error
+    - AIRFLOW_CONN_S3_PARSE_FAIL=s3://XXX:":password/"@s3
