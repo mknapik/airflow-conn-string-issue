@@ -1,0 +1,7 @@
+version: '3.7'
+services:
+  airflow:
+    images: apache/airflow:master-python3.7-ci
+    environment:
+    - AIRFLOW_CONN_S3_DEFAULT=s3://XXXXXXXXXXXXXXXX:XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX@s3
+ 
